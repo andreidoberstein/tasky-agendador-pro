@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -40,7 +39,9 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
   const [endTime, setEndTime] = React.useState(
     appointment?.endTime ? format(new Date(appointment.endTime), 'HH:mm') : '10:00'
   );
-  const [status, setStatus] = React.useState(appointment?.status || 'scheduled');
+  const [status, setStatus] = React.useState<'scheduled' | 'cancelled' | 'completed'>(
+    (appointment?.status as 'scheduled' | 'cancelled' | 'completed') || 'scheduled'
+  );
   const [color, setColor] = React.useState(appointment?.color || '#3B82F6');
 
   const colorOptions = [
@@ -172,7 +173,10 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
             <Label htmlFor="status" className="text-right">
               Status
             </Label>
-            <Select value={status} onValueChange={setStatus}>
+            <Select 
+              value={status} 
+              onValueChange={(value: 'scheduled' | 'cancelled' | 'completed') => setStatus(value)}
+            >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
