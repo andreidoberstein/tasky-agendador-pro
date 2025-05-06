@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from '@/hooks/use-toast';
+import { login } from '@/lib/api/auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -33,19 +34,36 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    // Simulate authentication
-    setTimeout(() => {
+
+    try {
+      console.log(values.email, values.password)
+      const data = {
+          email: values.email,
+          password: values.password
+        }
+      const response = await login(data)
+
+      if(response.status == 200) {
+        setTimeout(() => {
+          setIsLoading(false);
+          // Mock login success - in a real app, you would verify credentials
+          localStorage.setItem('isAuthenticated', 'true');
+          toast({
+            title: "Login realizado com sucesso",
+            description: "Bem-vindo ao painel administrativo."
+          });
+          navigate('/dashboard');
+        }, 1000);
+      }      
+    } catch (error) {
       setIsLoading(false);
-      // Mock login success - in a real app, you would verify credentials
-      localStorage.setItem('isAuthenticated', 'true');
       toast({
-        title: "Login realizado com sucesso",
-        description: "Bem-vindo ao painel administrativo."
+        title: "Erro no login",
+        description: "Credenciais inválidas ou erro na requisição."
       });
-      navigate('/dashboard');
-    }, 1000);
+    }    
   };
 
   return (
