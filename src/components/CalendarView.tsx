@@ -4,6 +4,8 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isTod
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Appointment } from '@/types';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface CalendarViewProps {
   appointments: Appointment[];
@@ -17,6 +19,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
   onSelectAppointment
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const isMobile = useIsMobile();
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
   const allDaysInMonth = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
@@ -59,14 +62,20 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     );
   };
 
+  // Calculate the height for calendar days based on device
+  const calendarDayHeight = isMobile ? 'h-20' : 'h-24'; 
+  
+  // Determine the maximum number of events to display before showing +more
+  const maxEventsToShow = isMobile ? 2 : 3;
+
   return (
     <div className="h-full">
-      <div className="flex justify-between items-center mb-4 p-4">
+      <div className="flex justify-between items-center mb-4 p-2 md:p-4">
         <div className="flex gap-2 items-center">
           <Button variant="outline" size="icon" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-base md:text-lg font-semibold">
             {format(currentDate, 'MMMM yyyy')}
           </h2>
           <Button variant="outline" size="icon" onClick={nextMonth}>
@@ -75,63 +84,74 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
         <Button onClick={onAddAppointment} size="sm">
           <Plus className="h-4 w-4 mr-1" />
-          Add
+          <span className="hidden sm:inline">Add</span>
         </Button>
       </div>
 
       <div className="grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-1">
-        <div className="py-2">Sun</div>
-        <div className="py-2">Mon</div>
-        <div className="py-2">Tue</div>
-        <div className="py-2">Wed</div>
-        <div className="py-2">Thu</div>
-        <div className="py-2">Fri</div>
-        <div className="py-2">Sat</div>
+        <div className="py-1">S</div>
+        <div className="py-1">M</div>
+        <div className="py-1">T</div>
+        <div className="py-1">W</div>
+        <div className="py-1">T</div>
+        <div className="py-1">F</div>
+        <div className="py-1">S</div>
       </div>
 
-      <div className="grid grid-cols-7 h-[calc(100vh-240px)] bg-white border-t">
-        {daysToDisplay.map((day, index) => {
-          const dayAppointments = getAppointmentsForDay(day);
-          const isCurrentMonth = isSameMonth(day, currentDate);
-          
-          return (
-            <div
-              key={index}
-              className={`calendar-day ${
-                isCurrentMonth ? 'calendar-day-current-month' : 'calendar-day-other-month'
-              } ${isToday(day) ? 'calendar-day-today' : ''}`}
-            >
-              <div className="flex justify-between items-center">
-                <span className={`text-xs ${isToday(day) ? 'font-bold bg-primary text-white rounded-full h-6 w-6 flex items-center justify-center' : ''}`}>
-                  {format(day, 'd')}
-                </span>
-                {dayAppointments.length > 0 && !isToday(day) && (
-                  <span className="text-xs px-1 rounded-full bg-primary text-white">
-                    {dayAppointments.length}
+      <ScrollArea className="h-[calc(100vh-180px)] md:h-[calc(100vh-240px)]">
+        <div className="grid grid-cols-7 bg-white border-t">
+          {daysToDisplay.map((day, index) => {
+            const dayAppointments = getAppointmentsForDay(day);
+            const isCurrentMonth = isSameMonth(day, currentDate);
+            const hasMoreEvents = dayAppointments.length > maxEventsToShow;
+            
+            return (
+              <div
+                key={index}
+                className={`relative calendar-day ${calendarDayHeight} ${
+                  isCurrentMonth ? 'calendar-day-current-month' : 'calendar-day-other-month'
+                } ${isToday(day) ? 'calendar-day-today' : ''}`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className={`text-xs ${isToday(day) ? 'font-bold bg-primary text-white rounded-full h-6 w-6 flex items-center justify-center' : ''}`}>
+                    {format(day, 'd')}
                   </span>
-                )}
+                  {dayAppointments.length > 0 && (
+                    <span className={`text-xs px-1 rounded-full ${isToday(day) ? 'bg-white text-primary' : 'bg-primary text-white'}`}>
+                      {dayAppointments.length}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1 overflow-hidden" style={{ maxHeight: isMobile ? '60px' : '75px' }}>
+                  {dayAppointments.slice(0, maxEventsToShow).map((appointment) => (
+                    <div
+                      key={appointment.id}
+                      className="calendar-event"
+                      style={{ backgroundColor: appointment.color || '#3B82F6', color: 'white' }}
+                      onClick={() => onSelectAppointment(appointment)}
+                    >
+                      {format(new Date(appointment.startTime), 'HH:mm')} {appointment.title}
+                    </div>
+                  ))}
+                  {hasMoreEvents && (
+                    <div 
+                      className="text-xs py-1 px-2 bg-gray-100 text-center text-gray-600 rounded cursor-pointer hover:bg-gray-200"
+                      onClick={() => {
+                        // When clicking on +more, show the first event that would display in the popup
+                        if (dayAppointments.length > maxEventsToShow) {
+                          onSelectAppointment(dayAppointments[maxEventsToShow]);
+                        }
+                      }}
+                    >
+                      +{dayAppointments.length - maxEventsToShow} more
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="mt-1 max-h-[80%] overflow-y-auto">
-                {dayAppointments.slice(0, 3).map((appointment) => (
-                  <div
-                    key={appointment.id}
-                    className="calendar-event"
-                    style={{ backgroundColor: appointment.color || '#3B82F6', color: 'white' }}
-                    onClick={() => onSelectAppointment(appointment)}
-                  >
-                    {format(new Date(appointment.startTime), 'HH:mm')} {appointment.title}
-                  </div>
-                ))}
-                {dayAppointments.length > 3 && (
-                  <div className="text-xs text-center text-gray-500 mt-1">
-                    +{dayAppointments.length - 3} more
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </ScrollArea>
     </div>
   );
 };
