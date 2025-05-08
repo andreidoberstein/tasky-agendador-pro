@@ -7,6 +7,7 @@ import AppointmentDetail from '@/components/AppointmentDetail';
 import { Appointment, mockData } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { createAppointment } from '@/lib/api/appointments'
 
 const DashboardPage = () => {
   const [appointments, setAppointments] = useState<Appointment[]>(mockData.appointments);
@@ -20,7 +21,7 @@ const DashboardPage = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleSaveAppointment = (appointment: Partial<Appointment>) => {
+  const handleSaveAppointment = async  (appointment: Partial<Appointment>) => {
     if (appointment.id) {
       // Update existing appointment
       setAppointments(appointments.map(a => 
@@ -40,18 +41,23 @@ const DashboardPage = () => {
         location: appointment.location,
         startTime: appointment.startTime || new Date(),
         endTime: appointment.endTime || new Date(),
-        status: appointment.status || 'scheduled',
+        status: appointment.status || 'SCHEDULED',
         createdAt: new Date(),
         updatedAt: new Date(),
-        userId: mockData.currentUser.id,
         color: appointment.color,
+        userId: "5d390a97-4c1e-481a-b8c9-098b9184d8a5"
       };
       setAppointments([...appointments, newAppointment]);
-      toast({
-        title: "Compromisso criado",
-        description: "Seu compromisso foi criado com sucesso."
-      });
-      setIsAddModalOpen(false);
+      console.log(newAppointment)
+      const response = await createAppointment(newAppointment)
+
+      if(response.status == 201) {
+        toast({
+          title: "Compromisso criado",
+          description: "Seu compromisso foi criado com sucesso."
+        });
+        setIsAddModalOpen(false);
+      }      
     }
   };
 

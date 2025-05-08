@@ -39,8 +39,8 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
   const [endTime, setEndTime] = React.useState(
     appointment?.endTime ? format(new Date(appointment.endTime), 'HH:mm') : '10:00'
   );
-  const [status, setStatus] = React.useState<'scheduled' | 'cancelled' | 'completed'>(
-    (appointment?.status as 'scheduled' | 'cancelled' | 'completed') || 'scheduled'
+  const [status, setStatus] = React.useState<'SCHEDULED' | 'CANCELLED' | 'COMPLETED'>(
+    (appointment?.status as 'SCHEDULED' | 'CANCELLED' | 'COMPLETED') || 'SCHEDULED'
   );
   const [color, setColor] = React.useState(appointment?.color || '#3B82F6');
 
@@ -71,7 +71,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
       location,
       startTime: startDateTime,
       endTime: endDateTime,
-      status: status as 'scheduled' | 'cancelled' | 'completed',
+      status: status as 'SCHEDULED' | 'CANCELLED' | 'COMPLETED',
       color
     });
   };
@@ -175,15 +175,15 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
             </Label>
             <Select 
               value={status} 
-              onValueChange={(value: 'scheduled' | 'cancelled' | 'completed') => setStatus(value)}
+              onValueChange={(value: 'SCHEDULED' | 'CANCELLED' | 'COMPLETED') => setStatus(value)}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="scheduled">Scheduled</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="SCHEDULED">Scheduled</SelectItem>
+                <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                <SelectItem value="COMPLETED">Completed</SelectItem>
               </SelectContent>
             </Select>
           </div>

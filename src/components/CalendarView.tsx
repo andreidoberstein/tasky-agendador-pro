@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, isSameDay } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Appointment } from '@/types';
+import AppointmentsDayModal from './AppointmentsDay';
 
 interface CalendarViewProps {
   appointments: Appointment[];
@@ -20,6 +20,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
   const allDaysInMonth = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAppointments, setSelectedAppointments] = useState([]);
+
+  const handleShowMore = (appointments) => {
+    setSelectedAppointments(appointments);
+    setShowModal(true);
+  };
+  
 
   // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
   const startDayOfWeek = firstDayOfMonth.getDay();
@@ -112,7 +120,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
                 )}
               </div>
               <div className="mt-1 max-h-[80%] overflow-y-auto">
-                {dayAppointments.slice(0, 3).map((appointment) => (
+                {dayAppointments.slice(0, 2).map((appointment) => (
                   <div
                     key={appointment.id}
                     className="calendar-event"
@@ -122,11 +130,28 @@ const CalendarView: React.FC<CalendarViewProps> = ({
                     {format(new Date(appointment.startTime), 'HH:mm')} {appointment.title}
                   </div>
                 ))}
-                {dayAppointments.length > 3 && (
-                  <div className="text-xs text-center text-gray-500 mt-1">
-                    +{dayAppointments.length - 3} more
+                {dayAppointments.length > 2 && (
+                  // <div className="text-xs text-center text-gray-500 mt-1">
+                  //   +{dayAppointments.length - 3} more
+                  // </div>
+                  <div
+                    className="text-xs text-center text-gray-500 mt-1 cursor-pointer hover:underline"
+                    onClick={() => handleShowMore(dayAppointments)}
+                  >
+                    +{dayAppointments.length - 2} more
+                    
                   </div>
                 )}
+                {showModal && (
+                      <AppointmentsDayModal
+                        appointments={selectedAppointments}
+                        onClose={() => setShowModal(false)}
+                        onSelectAppointment={(appointment) => {
+                          onSelectAppointment(appointment);
+                          setShowModal(false); // fecha após selecionar
+                        }}                                       
+                      />
+                    )}
               </div>
             </div>
           );
