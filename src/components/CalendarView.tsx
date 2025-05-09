@@ -17,6 +17,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
   onSelectAppointment
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const isMobile = useIsMobile();
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
   const allDaysInMonth = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
@@ -67,14 +68,20 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     );
   };
 
+  // Calculate the height for calendar days based on device
+  const calendarDayHeight = isMobile ? 'h-20' : 'h-24'; 
+  
+  // Determine the maximum number of events to display before showing +more
+  const maxEventsToShow = isMobile ? 2 : 3;
+
   return (
     <div className="h-full">
-      <div className="flex justify-between items-center mb-4 p-4">
+      <div className="flex justify-between items-center mb-4 p-2 md:p-4">
         <div className="flex gap-2 items-center">
           <Button variant="outline" size="icon" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-base md:text-lg font-semibold">
             {format(currentDate, 'MMMM yyyy')}
           </h2>
           <Button variant="outline" size="icon" onClick={nextMonth}>
@@ -83,18 +90,18 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
         <Button onClick={onAddAppointment} size="sm">
           <Plus className="h-4 w-4 mr-1" />
-          Add
+          <span className="hidden sm:inline">Add</span>
         </Button>
       </div>
 
       <div className="grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-1">
-        <div className="py-2">Sun</div>
-        <div className="py-2">Mon</div>
-        <div className="py-2">Tue</div>
-        <div className="py-2">Wed</div>
-        <div className="py-2">Thu</div>
-        <div className="py-2">Fri</div>
-        <div className="py-2">Sat</div>
+        <div className="py-1">S</div>
+        <div className="py-1">M</div>
+        <div className="py-1">T</div>
+        <div className="py-1">W</div>
+        <div className="py-1">T</div>
+        <div className="py-1">F</div>
+        <div className="py-1">S</div>
       </div>
 
       <div className="grid grid-cols-7 h-[calc(100vh-240px)] bg-white border-t">
