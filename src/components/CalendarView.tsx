@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Appointment } from '@/types';
 import AppointmentsDayModal from './AppointmentsDay';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CalendarViewProps {
   appointments: Appointment[];
