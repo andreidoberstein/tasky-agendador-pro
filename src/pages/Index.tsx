@@ -70,6 +70,7 @@ const Index = () => {
   };
 
   const handleSelectAppointment = (appointment: Appointment) => {
+    console.log(appointment)
     setSelectedAppointment(appointment);
     setIsDetailModalOpen(true);
   };
@@ -81,6 +82,7 @@ const Index = () => {
 
   const handleDeleteAppointment = () => {
     if (selectedAppointment) {
+      console.log(selectedAppointment)
       // setAppointments(appointments.filter(a => a.id !== selectedAppointment.id));
       toast({
         title: "Appointment deleted",

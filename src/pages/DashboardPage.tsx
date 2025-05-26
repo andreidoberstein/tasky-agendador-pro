@@ -7,7 +7,7 @@ import AppointmentDetail from '@/components/AppointmentDetail';
 import { Appointment, mockData } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { useState } from 'react';
-import { createAppointment, getAppointments } from '@/lib/api/appointments'
+import { createAppointment, deleteAppointment, getAppointments } from '@/lib/api/appointments'
 
 const DashboardPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -21,9 +21,7 @@ const DashboardPage = () => {
     const data = async () => {
       try {
         const appData = await getAppointments()
-        console.log(appData.data)
         setAppointments(appData.data)
-
       } catch (error) {
         console.error('Error fetching ', error)
       }
@@ -70,7 +68,6 @@ const DashboardPage = () => {
         color: appointment.color,
         userId: "5d390a97-4c1e-481a-b8c9-098b9184d8a5"
       };
-      // setAppointments([...appointments, newAppointment]);
 
       const response = await createAppointment(newAppointment)
 
@@ -95,13 +92,23 @@ const DashboardPage = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleDeleteAppointment = () => {
+  const handleDeleteAppointment = async () => {
     if (selectedAppointment) {
-      // setAppointments(appointments.filter(a => a.id !== selectedAppointment.id));
-      toast({
-        title: "Compromisso excluído",
-        description: "Seu compromisso foi excluído com sucesso."
-      });
+      try {
+        
+        const response = await deleteAppointment(selectedAppointment.id)
+
+        if(response.status == 200) {
+          toast({
+            title: "Compromisso excluído",
+            description: "Seu compromisso foi excluído com sucesso."
+          });
+          handleRefresh()
+        }
+      } catch (error) {
+        console.error(`Failed delete appointment: ${error}`)
+      }
+      
       setIsDetailModalOpen(false);
     }
   };

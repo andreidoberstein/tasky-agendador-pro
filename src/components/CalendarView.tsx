@@ -138,10 +138,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
                     {format(new Date(appointment.startTime), 'HH:mm')} {appointment.title}
                   </div>
                 ))}
-                {dayAppointments.length > 2 && (
-                  // <div className="text-xs text-center text-gray-500 mt-1">
-                  //   +{dayAppointments.length - 3} more
-                  // </div>
+                {dayAppointments.length > 2 && (                  
                   <div
                     className="text-xs text-center text-gray-500 mt-1 cursor-pointer hover:underline"
                     onClick={() => handleShowMore(dayAppointments)}
