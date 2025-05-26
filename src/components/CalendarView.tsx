@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, isSameDay } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
-import { Appointment } from '@/types';
+import { Appointment } from '@/types/index';
 import AppointmentsDayModal from './AppointmentsDay';
 import { useIsMobile } from '@/hooks/use-mobile';
 

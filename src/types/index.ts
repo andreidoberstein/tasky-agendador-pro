@@ -30,6 +30,7 @@ export interface Appointment {
   participants?: User[];
   files?: AppointmentFile[];
   color?: string;
+  data?: Appointment[];
 }
 
 export interface AppointmentFile {
