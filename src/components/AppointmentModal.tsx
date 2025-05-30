@@ -80,12 +80,12 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit Appointment' : 'Add Appointment'}</DialogTitle>
+          <DialogTitle>{isEditing ? 'Edit Compromisso' : 'Add Compromisso'}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
-              Title
+              Título
             </Label>
             <Input
               id="title"
@@ -97,7 +97,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="description" className="text-right">
-              Description
+              Descrição
             </Label>
             <Textarea
               id="description"
@@ -109,7 +109,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="location" className="text-right">
-              Location
+              Local
             </Label>
             <Input
               id="location"
@@ -121,7 +121,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="date" className="text-right">
-              Date
+              Data
             </Label>
             <div className="col-span-3">
               <Popover>
@@ -151,7 +151,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           </div>
           
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Time</Label>
+            <Label className="text-right">Horário</Label>
             <div className="col-span-3 flex gap-2 items-center">
               <Input
                 type="time"
@@ -159,7 +159,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 onChange={(e) => setStartTime(e.target.value)}
                 className="flex-1"
               />
-              <span>to</span>
+              <span>às</span>
               <Input
                 type="time"
                 value={endTime}
@@ -181,9 +181,9 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SCHEDULED">Scheduled</SelectItem>
-                <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                <SelectItem value="COMPLETED">Completed</SelectItem>
+                <SelectItem value="SCHEDULED">Agendado</SelectItem>
+                <SelectItem value="CANCELLED">Cancelado</SelectItem>
+                <SelectItem value="COMPLETED">Completado</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -218,9 +218,9 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            Cancelar
           </Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button onClick={handleSave}>Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, isSameDay, setDefaultOptions } from 'date-fns';
+import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { CalendarPlus2, ChevronLeft, ChevronRight, LucideCalendarPlus, Plus } from 'lucide-react';
 import { Appointment } from '@/types/index';
 import AppointmentsDayModal from './AppointmentsDay';
 import { useIsMobile } from '@/hooks/use-mobile';
+setDefaultOptions({ locale: ptBR })
 
 interface CalendarViewProps {
   appointments: Appointment[];
@@ -90,18 +92,18 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           </Button>
         </div>
         <Button onClick={onAddAppointment} size="sm">
-          <Plus className="h-4 w-4 mr-1" />
-          <span className="hidden sm:inline">Add</span>
+          <LucideCalendarPlus className="h-4 w-4 mr-1" />
+          <span className="hidden sm:inline">Adicionar</span>
         </Button>
       </div>
 
       <div className="grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-1">
+        <div className="py-1">D</div>
         <div className="py-1">S</div>
-        <div className="py-1">M</div>
         <div className="py-1">T</div>
-        <div className="py-1">W</div>
-        <div className="py-1">T</div>
-        <div className="py-1">F</div>
+        <div className="py-1">Q</div>
+        <div className="py-1">Q</div>
+        <div className="py-1">S</div>
         <div className="py-1">S</div>
       </div>
 
